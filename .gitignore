@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.log
+shot*.jpg
+# Stylized Paris Street (Fab, licence payante) : jamais dans un dépôt public. Voir docs/ASSETS.md.
+public/models/street/

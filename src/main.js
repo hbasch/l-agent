@@ -1,0 +1,26 @@
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { loadStreet } from './street.js';
+import { spawn, updateCharacters } from './characters.js';
+import { makePlayer } from './player.js';
+import { addLights } from './lighting.js';
+import { makePost } from './post.js';
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.AgXToneMapping; renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.35;
+renderer.toneMappingExposure = 1.1;
+const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.05, 300);
+const q = new URLSearchParams(location.search);
+camera.position.set(+(q.get('x') ?? 0), +(q.get('y') ?? 1.65), +(q.get('z') ?? 4)); camera.rotation.order = 'YXZ'; camera.rotation.y = +(q.get('yaw') ?? 0); camera.rotation.x = +(q.get('pitch') ?? 0);
+const player = makePlayer(camera, renderer.domElement);
+const street = await loadStreet(scene); await addLights(scene);
+if (!street) { const g = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ color: 0x777066, roughness: 0.95 }));
+  g.rotation.x = -Math.PI / 2; g.receiveShadow = true; scene.add(g); }
+await Promise.all([spawn(scene, 'ines', new THREE.Vector3(-4.6, 0.1, 0.4), 2.6), spawn(scene, 'policier', new THREE.Vector3(-4.0, 0.1, -0.7), 2.2, 'idle_look_around_01')]).catch((e) => console.warn(e));
+const post = makePost(renderer, scene, camera, q);
+addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); post.setSize(innerWidth, innerHeight); });
+const clock = new THREE.Clock(); window.__ready = true;
+renderer.setAnimationLoop(() => { const dt = Math.min(clock.getDelta(), 0.05); player.update(dt); updateCharacters(dt); if (q.has('noPost')) renderer.render(scene, camera); else post.render(clock.elapsedTime); });

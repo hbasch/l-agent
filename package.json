@@ -1,0 +1,9 @@
+{
+  "name": "l-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "vite --host 127.0.0.1 --port 5190", "build": "vite build", "preview": "vite preview --port 5190", "shot": "node tools/shot.mjs" },
+  "dependencies": { "three": "0.186.1" },
+  "devDependencies": { "vite": "8.3.4", "playwright": "1.56.1" }
+}
