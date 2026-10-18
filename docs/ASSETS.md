@@ -13,3 +13,9 @@ Règle de cohérence avec le pack (style peint, formes un peu épaissies, couleu
 - Dans Blender : biseauter les arêtes vives, simplifier les détails trop fins, textures 1024 max.
 - Dans le jeu : matériau passé par `stylize()` ; teinte rapprochée de la palette du pack (albedo un peu désaturé, rugosité haute).
 - Exporter en GLB (mètres, Y en haut), le poser par un fichier de placement comme layout.json.
+
+## Modélisation dans Blender (demande de l'auteur)
+- Des modèles corrects, jamais « moches » : prendre le temps qu'il faut. Proportions réelles, biseaux, détails secondaires (vis, joints, câbles, étiquettes), matériaux séparés (métal peint, plastique, caoutchouc, verre).
+- Vérifier chaque modèle avec `look` (plusieurs angles) avant export, puis dans le jeu à côté des objets du pack.
+- Préférer un modèle Poly Haven / Sketchfab de qualité (licence vérifiée) à un modèle fait vite.
+- Exemple : tools/props/camera.py (caméra de vidéosurveillance, ~9 500 triangles).
