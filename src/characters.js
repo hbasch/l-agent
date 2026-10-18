@@ -1,7 +1,8 @@
 // Rocketbox characters (MIT) converted by tools/characters/build.sh: one GLB with skin + clips.
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-const loader = new GLTFLoader(); const mixers = [];
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder); const mixers = [];
 const SCALE = { ines: 0.93, yanis: 0.95 };  // ados de 13 ans en 2027 (avatars adultes réduits)
 export async function spawn(scene, name, pos, rotY = 0, clip = 'idle_neutral_01') {
   const g = await loader.loadAsync(`models/characters/${name}.glb`);

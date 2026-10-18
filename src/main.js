@@ -7,7 +7,7 @@ import { addLights } from './lighting.js';
 import { makePost } from './post.js';
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight);
-renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap;
 document.body.appendChild(renderer.domElement);
 const q0 = new URLSearchParams(location.search);
 const scene = new THREE.Scene();
@@ -22,7 +22,7 @@ if (!street) { const g = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THR
 await Promise.all([spawn(scene, 'ines', new THREE.Vector3(-4.6, 0.1, 0.4), 2.6), spawn(scene, 'yanis', new THREE.Vector3(-4.0, 0.1, -0.7), 2.2, 'idle_look_around_01')]).catch((e) => console.warn(e));
 const post = makePost(renderer, scene, camera, q);
 addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); post.setSize(innerWidth, innerHeight); });
-const clock = new THREE.Clock(); window.__ready = true;
+const clock = new THREE.Timer(); window.__ready = true;
 window.__pick = (x, y) => { const r = new THREE.Raycaster(); r.setFromCamera(new THREE.Vector2(x, y), camera); const h = r.intersectObjects(scene.children, true)[0];
   return h ? { mat: h.object.material.name, d: h.distance.toFixed(1), geo: h.object.geometry.name || h.object.name, map: h.object.material.map?.image?.src?.split('/').pop(), rep: h.object.material.map?.repeat?.toArray() } : null; };
-renderer.setAnimationLoop(() => { const dt = Math.min(clock.getDelta(), 0.05); player.update(dt); updateCharacters(dt); if (q.has('noPost')) renderer.render(scene, camera); else post.render(clock.elapsedTime); });
+renderer.setAnimationLoop(() => { clock.update(); const dt = Math.min(clock.getDelta(), 0.05); player.update(dt); updateCharacters(dt); if (q.has('noPost')) renderer.render(scene, camera); else post.render(clock.getElapsed()); });

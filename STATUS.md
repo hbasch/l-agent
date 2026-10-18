@@ -12,6 +12,12 @@
 - Inès et Yanis : ados (Female_Adult_05 et Male_Adult_17 réduits à 0,93 / 0,95), plus d'enfants.
 - Build web : `npm run build` → dist/ (base relative, prêt pour itch.io en HTML5).
 
+## 18/10, suite
+- Histoire : incohérences réglées dans docs/CONCEPTION.md v4 (Yanis non français par suppression du droit du sol, Sofia régularisée puis non renouvelée, Malik sur le contingent préfectoral, Aubry poursuivi pour aide, arrêté préfectoral au lieu du panneau de bailleur, caméra 2027 = outil hérité). Nouvelles sources : programme RN 2024 (LCP), projet référendaire 2021 (Public Sénat), affaire Herrou.
+- Lumières : 16 lumières du niveau converties (intensités plafonnées), ombre du soleil 4096 recentrée, bloom réduit sans HDR.
+- Poids : 107 Mo -> 30 Mo (meshopt sur les GLB, WebP pour les textures : tools/optimize.sh, public/models/street/texweb). Les textures sources (tex1k) restent hors du build.
+- Build itch : `npm run build`, zipper le contenu de dist/, itch.io > HTML > « played in the browser ».
+
 ## Problèmes ouverts
 - Rendu encore plat comparé à l'Unreal (pas de Lumen) : pavés mouillés, flaques (decals), peinture de sommets des façades non exportés ; brouillard et lumières à régler.
 - Le sol du pack est un Landscape sans textures (couleur unie) ; les pavés visibles viennent de meshes.

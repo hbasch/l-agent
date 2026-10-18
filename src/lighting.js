@@ -11,11 +11,13 @@ export async function addLights(scene, renderer) {
     ueTransform(tmp, { p: l.p, q: l.q, s: [1, 1, 1] }); const col = new THREE.Color(...l.color);
     if (l.type === 'DirectionalLight') {
       const dir = new THREE.Vector3(1, 0, 0).applyQuaternion(new THREE.Quaternion(-l.q[0], -l.q[2], -l.q[1], l.q[3]));
-      sun = new THREE.DirectionalLight(col, 2.6); sun.position.copy(dir.clone().multiplyScalar(-40)); sun.castShadow = true;
-      sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -28, right: 28, top: 28, bottom: -28, near: 1, far: 100 });
+      sun = new THREE.DirectionalLight(col, 2.6); sun.position.copy(dir.clone().multiplyScalar(-60)); sun.target.position.set(4, 0, -2); sun.castShadow = true;
+      sun.shadow.mapSize.set(4096, 4096); Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, near: 1, far: 120 }); sun.shadow.radius = 3;
       sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.03; scene.add(sun, sun.target);
-    } else if (l.type !== 'SkyLight' && n < 12) {
-      const pl = new THREE.PointLight(col, Math.min(60, l.intensity * 3), Math.min(12, (l.radius || 1000) / 100), 2);
+    } else if (l.type !== 'SkyLight' && n < 16) {
+      // Unreal intensities (candelas for points, nits-ish for rects) -> three.js candelas, physically based falloff
+      const k = l.type === 'RectLight' ? 1.2 : 2.5;
+      const pl = new THREE.PointLight(col, Math.min(20, l.intensity * k), Math.min(10, (l.radius || 1000) / 100), 2);
       pl.position.copy(tmp.position); scene.add(pl); n++;
     }
   }

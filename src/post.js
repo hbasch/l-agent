@@ -14,7 +14,7 @@ export function makePost(renderer, scene, camera, q) {
   const gl = renderer.getContext(); const half = !!gl.getExtension('EXT_color_buffer_float') && !q.has('ldr');
   const c = new EffectComposer(renderer, half ? undefined : new THREE.WebGLRenderTarget(innerWidth * renderer.getPixelRatio(), innerHeight * renderer.getPixelRatio(), { type: THREE.UnsignedByteType })); c.addPass(new RenderPass(scene, camera));
   if (!q.has('noAO')) { const ao = new GTAOPass(scene, camera, innerWidth, innerHeight); ao.blendIntensity = 0.8; c.addPass(ao); }
-  c.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.35, 0.6, 0.85));
+  c.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), half ? 0.45 : 0.15, 0.5, half ? 0.9 : 0.97));  // LDR fallback: bloom only on near-white
   c.addPass(new OutputPass()); const g = new ShaderPass(Grade); c.addPass(g);
   return { render(t) { g.uniforms.time.value = t % 100; c.render(); }, setSize(w, h) { c.setSize(w, h); } };
 }

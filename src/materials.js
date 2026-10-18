@@ -1,18 +1,18 @@
 // Rebuilds the Unreal material instances (materials.json, exported by web_export.py) as three.js PBR materials.
 // One shared look for the whole game: every material goes through stylize() so street, props and characters match.
 import * as THREE from 'three';
-const BASE = 'models/street/'; const tl = new THREE.TextureLoader(); const texCache = new Map(); let MATS = {}; let PNG = new Set();
+const BASE = 'models/street/'; const tl = new THREE.TextureLoader(); const texCache = new Map(); let MATS = {};
 const short = (p) => (p || '').split('.').pop();
 function tex(path, srgb, rep) {
   const n = short(path); if (!n) return null; const k = n + (rep ? rep.join(',') : '');
   if (texCache.has(k)) return texCache.get(k);
-  const t = tl.load(BASE + 'tex1k/' + n + (PNG.has(n) ? '.png' : '.jpg'));
+  const t = tl.load(BASE + 'texweb/' + n + '.webp');
   t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4;
   if (rep) t.repeat.set(rep[0], rep[1]); texCache.set(k, t); return t;
 }
 const pick = (o, keys) => { for (const k of keys) if (o && o[k]) return o[k]; return null; };
 const built = new Map();
-export async function loadMaterials() { const [r, p] = await Promise.all([fetch(BASE + 'materials.json'), fetch(BASE + 'tex1k/png.json')]); MATS = r.ok ? await r.json() : {}; PNG = new Set(p.ok ? await p.json() : []); }
+export async function loadMaterials() { const r = await fetch(BASE + 'materials.json'); MATS = r.ok ? await r.json() : {}; }
 export function material(path) {
   const key = short(path); if (built.has(key)) return built.get(key);
   const e = Object.entries(MATS).find(([p]) => short(p) === key); const d = e ? e[1] : {}; const T = d.tex || {}, S = d.scalar || {}, Vc = d.vec || {};

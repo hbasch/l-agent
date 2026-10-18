@@ -1,6 +1,7 @@
 // Street: layout.json (exported from Unreal by Tools/LAgent/web_export.py) + one GLB per mesh, drawn as instances.
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { ueTransform } from './ue.js';
 import { loadMaterials, material } from './materials.js';
 const BASE = 'models/street/';
@@ -11,7 +12,7 @@ export async function loadStreet(scene) {
   const layout = await lr.json(), variants = await vr.json(); await loadMaterials();
   const groups = new Map();
   for (const it of layout.items) { if (!groups.has(it.m)) groups.set(it.m, []); groups.get(it.m).push(it); }
-  const loader = new GLTFLoader(); const tmp = new THREE.Object3D(); const root = new THREE.Group(); const cache = new Map();
+  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder); const tmp = new THREE.Object3D(); const root = new THREE.Group(); const cache = new Map();
   await Promise.all([...groups].map(async ([key, items]) => {
     const v = variants[key]; if (!v || /SkySphere/.test(v.mesh)) return;
     const file = v.mesh.split('.').pop();
