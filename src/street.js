@@ -32,3 +32,11 @@ export async function loadStreet(scene) {
   if (land) land.scene.traverse((m) => { if (m.isMesh) { m.material = new THREE.MeshStandardMaterial({ color: 0x3b3632, roughness: 0.55 }); m.receiveShadow = true; } }), root.add(land.scene);
   scene.add(root); return root;
 }
+
+// One prop of the pack, outside the layout (home scene, tools): its default materials, rebuilt like the street.
+const propLoader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+export async function loadProp(file) {
+  const g = await propLoader.loadAsync(BASE + 'meshes/' + file + '.glb').catch(() => null); if (!g) return null;
+  g.scene.traverse((m) => { if (m.isMesh) { m.material = material(m.material.name); m.castShadow = m.receiveShadow = true; } });
+  return g.scene;
+}

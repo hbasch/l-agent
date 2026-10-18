@@ -38,8 +38,9 @@ export function material(path) {
     const worldUV = road ? (S['L2-TileU'] || S['L1-TileU'] || 4) / ((S.UV_Position || 500) / 100) : 0;
     if (road) { rep = null; }
     const emissiveOnly = S.intensityemissive !== undefined;  // MM_Tegole04 used for neon letters: albedo = emissive mask
-    m = new THREE.MeshStandardMaterial({ map: tex(alb, true, rep), normalMap: tex(nor, false, rep), roughnessMap: tex(arm, false, rep), aoMap: tex(arm, false, rep), metalnessMap: tex(arm, false, rep), roughness: 1, metalness: 1 });
-    if (!arm) m.metalness = 0;
+    m = new THREE.MeshStandardMaterial({ map: tex(alb, true, rep), normalMap: tex(nor, false, rep), roughnessMap: tex(arm, false, rep), aoMap: tex(arm, false, rep), roughness: 1, metalness: 0 });
+    // Blue channel is metal on some maps and junk on others; the pack's masters barely use metal, and without Lumen
+    // reflections metal reads black in three.js: keep everything dielectric.
     const ni = S.normalintensity ?? S.IntensityNormal2 ?? 1;
     m.normalScale.set(ni, -ni);  // Unreal normal maps are DirectX (green down)
     if (S.roughness !== undefined && S.roughness < 1) m.roughness = Math.max(0.05, S.roughness);
@@ -48,6 +49,7 @@ export function material(path) {
       m.emissiveIntensity = Math.min(8, (S.intensityemissive || S.EmissiveIntensity || 4) / 6);
       if (emissiveOnly) { m.map = null; m.color.set(0x111111); }
     }
+    m.aoMapIntensity = 0.6;  // the pack's AO is strong; three applies it to all indirect light
     if (T.OpacityMask || T.Mask) { m.alphaTest = 0.5; m.side = THREE.DoubleSide; }
     if (Vc.Color1 && /HouseVertex/.test(parent)) m.color.setRGB(...Vc.Color1);
     if (/Ground|DefaultStreet/.test(parent)) { m.roughness = 0.6; m.envMapIntensity = 1.2; }  // damp stone
