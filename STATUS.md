@@ -6,6 +6,12 @@
 - **Personnages** : Rocketbox (MIT) convertis par `tools/characters/build.sh` (pip bpy 5.2 + ImageMagick), pipeline repris de Tidewater ; squelettes enfants (Bip02) corrigés. Distribution : ines, yanis, sofia, malik, aubry, didier, kevin, policier, policiere (choix provisoires, à valider : variable CAST de build.sh).
 - Docs de la version Unreal copiées dans docs/.
 
+## 18/10, rendu
+- Matériaux refaits par matériau maître du pack (src/materials.js) : normales DirectX (vert inversé), ARM (AO, rugosité, métal), néons (MM_Tegole04 + intensityemissive), route en UV monde (MM_DefaultStreet avec TexCoord > 0, couche 2 = pavés sombres), buissons peints (MM_Bush, shader sans texture), vitres, brouillard en cartes additives.
+- Éclairage : HDRI du pack (sky.hdr, exporté de /Game/ParisStreet/HDRI/HDRI1) pour l'environnement et le fond, soleil de la carte, tonalité ACES, exposition 0,85 (?exp=).
+- Inès et Yanis : ados (Female_Adult_05 et Male_Adult_17 réduits à 0,93 / 0,95), plus d'enfants.
+- Build web : `npm run build` → dist/ (base relative, prêt pour itch.io en HTML5).
+
 ## Problèmes ouverts
 - Rendu encore plat comparé à l'Unreal (pas de Lumen) : pavés mouillés, flaques (decals), peinture de sommets des façades non exportés ; brouillard et lumières à régler.
 - Le sol du pack est un Landscape sans textures (couleur unie) ; les pavés visibles viennent de meshes.
